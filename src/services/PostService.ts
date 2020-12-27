@@ -1,15 +1,17 @@
 import { IPost, IPostService } from "../interfaces";
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+import { ApolloClient, gql, NormalizedCacheObject } from '@apollo/client';
 
 export class PostService implements IPostService {
+
+  constructor(private apolloClient: ApolloClient<NormalizedCacheObject>) {
+
+  }
+
   public async getLastPosts(): Promise<IPost[]> {
+    const { apolloClient } = this;
 
-    const client = new ApolloClient({
-      uri: 'http://localhost:1337/graphql',
-      cache: new InMemoryCache()
-    });
 
-    const result = await client.query({
+    const result = await apolloClient.query({
       query: gql`
         query posts {
           posts {
