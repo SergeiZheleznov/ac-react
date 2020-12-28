@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import { LoginForm, PostPage, PostsList } from './containers';
 import { AppContext } from './context/AppContext';
-import { PostService } from './services';
+import { PostService, AuthService } from './services';
 import { Route, Switch } from "wouter";
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
@@ -14,8 +14,9 @@ function App() {
   });
 
   const postService = new PostService(client);
+  const authService = new AuthService(client);
   return (
-    <AppContext.Provider value={{ postService }}>
+    <AppContext.Provider value={{ postService, authService }}>
       <div className="text-xs container mx-auto">
         <header className="App-header">
           hi there!

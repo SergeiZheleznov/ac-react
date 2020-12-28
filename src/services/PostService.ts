@@ -26,7 +26,7 @@ export class PostService implements IPostService {
           }
         }
       `
-    });  
+    });
     return result.data['posts'] as IPost[];
   }
 
