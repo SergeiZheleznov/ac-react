@@ -1,6 +1,7 @@
 import { ApolloClient, gql, NormalizedCacheObject } from "@apollo/client";
 import { AuthHelper } from "../helpers/AuthHelper";
 import { IAuthService } from "../interfaces";
+import { IUser } from "../interfaces/IUser";
 export class AuthService implements IAuthService {
 
   constructor(private apolloClient: ApolloClient<NormalizedCacheObject>) {
@@ -17,18 +18,20 @@ export class AuthService implements IAuthService {
             me {
               id,
               email,
-              username,
-              role
+              username
             }
           }
         `
       });
 
-      console.log('result', result)
+      const user = result?.data?.me as IUser;
+      if (user) {
+        return user;
+      }
     } catch (error) {
       
     }
-    return null;
+    return undefined;
   }
 
   public async login(email: string, password: string): Promise<void> {

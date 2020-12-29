@@ -2,40 +2,32 @@ import React from 'react';
 import './App.css';
 import { LoginForm, PostPage, PostsList } from './containers';
 import { AppContext } from './context/AppContext';
-import { PostService, AuthService } from './services';
 import { Route, Switch } from "wouter";
-import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
+import { IUser } from './interfaces/IUser';
+import { IAuthService, IPostService } from './interfaces';
 
-function App() {
+interface IAppProps {
+  postService: IPostService;
+  authService: IAuthService;
+}
 
-  const jwt = localStorage.getItem('jwt');
-  const link = createHttpLink({
-    uri: 'http://localhost:1337/graphql',
-    headers: {
-      authorization: jwt ? `Bearer ${jwt}` : "",
-    }
-  });
-  const client = new ApolloClient({
-    link,
-    cache: new InMemoryCache()
-  });
+const App: React.FC<IAppProps> = (props) => {
 
-  const postService = new PostService(client);
-  const authService = new AuthService(client);
+  const { authService, postService } = props;
+  const [currentUser, setCurrentUser] = React.useState<IUser | undefined>(undefined);
 
   React.useEffect(()=>{
     (async()=>{
-      // const user = await authService.authenticate();
-      // console.log(user);
+      const user = await authService.authenticate();
+      setCurrentUser(user);
     })();
-  },[]);
+  },[authService]);
 
   return (
-    <AppContext.Provider value={{ postService, authService }}>
+    <AppContext.Provider value={{ postService, authService, currentUser }}>
       <div className="text-xs container mx-auto">
         <header className="App-header">
-          hi there!
-          <LoginForm />
+          { currentUser ? `Hi ${currentUser.username}` : <LoginForm />}
         </header>
         <Switch>
           <Route path="/post/:id">
