@@ -4,17 +4,32 @@ import { LoginForm, PostPage, PostsList } from './containers';
 import { AppContext } from './context/AppContext';
 import { PostService, AuthService } from './services';
 import { Route, Switch } from "wouter";
-import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
 
 function App() {
 
-  const client = new ApolloClient({
+  const jwt = localStorage.getItem('jwt');
+  const link = createHttpLink({
     uri: 'http://localhost:1337/graphql',
+    headers: {
+      authorization: jwt ? `Bearer ${jwt}` : "",
+    }
+  });
+  const client = new ApolloClient({
+    link,
     cache: new InMemoryCache()
   });
 
   const postService = new PostService(client);
   const authService = new AuthService(client);
+
+  React.useEffect(()=>{
+    (async()=>{
+      // const user = await authService.authenticate();
+      // console.log(user);
+    })();
+  },[]);
+
   return (
     <AppContext.Provider value={{ postService, authService }}>
       <div className="text-xs container mx-auto">

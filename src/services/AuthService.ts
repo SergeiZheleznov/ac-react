@@ -1,22 +1,37 @@
 import { ApolloClient, gql, NormalizedCacheObject } from "@apollo/client";
+import { AuthHelper } from "../helpers/AuthHelper";
 import { IAuthService } from "../interfaces";
-import { IUser } from "../interfaces/IUser";
-
-// const AUTHENTICATE_USER = gql`
-//   mutation {
-//     login(input: { identifier: "email", password: "password" }) {
-//       jwt
-//     }
-//   }
-// `;
-
 export class AuthService implements IAuthService {
 
   constructor(private apolloClient: ApolloClient<NormalizedCacheObject>) {
     
   }
 
-  public async authenticate(email: string, password: string): Promise<IUser> {
+  public async authenticate() {
+    
+    try {
+      const { apolloClient } = this;
+      const result = await apolloClient.query({
+        query: gql`
+          query {
+            me {
+              id,
+              email,
+              username,
+              role
+            }
+          }
+        `
+      });
+
+      console.log('result', result)
+    } catch (error) {
+      
+    }
+    return null;
+  }
+
+  public async login(email: string, password: string): Promise<void> {
 
     try {
       const { apolloClient } = this;
@@ -29,16 +44,18 @@ export class AuthService implements IAuthService {
           }
         `
       });
-      console.log(result);
+
+      const jwt = result?.data?.login?.jwt;
+      
+      if (jwt) {
+        AuthHelper.setToken(jwt);
+      }
     } catch (error) {
       
     }
+  }
 
-
-    return {
-      id: 1,
-      login: 'test',
-      email: 'test@test.ts'
-    }
+  public logout() {
+    AuthHelper.clearToken();
   }
 }

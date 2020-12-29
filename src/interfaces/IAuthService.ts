@@ -1,5 +1,7 @@
 import { IUser } from "./IUser";
 
 export interface IAuthService {
-  authenticate(email: string, password: string): Promise<IUser>;
+  authenticate(): Promise<IUser | null>;
+  login(email: string, password: string): Promise<void>;
+  logout(): void;
 }
