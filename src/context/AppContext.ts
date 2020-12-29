@@ -3,5 +3,6 @@ import { IAppContext } from "../interfaces";
 
 export const AppContext = React.createContext<IAppContext>({
   postService: undefined,
-  authService: undefined
+  authService: undefined,
+  currentUser: undefined
 });

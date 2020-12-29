@@ -5,6 +5,7 @@ import { AppContext } from './context/AppContext';
 import { Route, Switch } from "wouter";
 import { IUser } from './interfaces/IUser';
 import { IAuthService, IPostService } from './interfaces';
+import { CreatePost } from './routes/CreatePost';
 
 interface IAppProps {
   postService: IPostService;
@@ -31,6 +32,10 @@ const App: React.FC<IAppProps> = (props) => {
         </header>
         <Switch>
           <Route path="/post/:id">
+            {params => <PostPage id={params.id} />}
+          </Route>
+          <Route path="/create" component={CreatePost} />
+          <Route path="/edit/:id">
             {params => <PostPage id={params.id} />}
           </Route>
           <Route path="/" component={PostsList} />
