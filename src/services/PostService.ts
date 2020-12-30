@@ -1,6 +1,15 @@
 import { IPost, IPostService } from "../interfaces";
 import { ApolloClient, gql, NormalizedCacheObject } from '@apollo/client';
 
+const CREATE_POST = gql`
+mutation createPost($title: String!, $source: String!) {
+  createPost(input: { data: { title: $title, source: $source } }) {
+    post {
+      title
+      source
+    }
+  }
+}`;
 export class PostService implements IPostService {
 
   constructor(private apolloClient: ApolloClient<NormalizedCacheObject>) {
@@ -10,17 +19,12 @@ export class PostService implements IPostService {
   public async createPost(post: IPost): Promise<IPost> {
     const { apolloClient } = this;
     const result = await apolloClient.mutate({
-      mutation: gql`
-        mutation {
-          createPost(input: { data: { title: "${post.title}", source: "${post.source}" } }) {
-            post {
-              title
-              source
-            }
-          }
-        }
+      mutation: CREATE_POST,
+      variables: {
+        title: post.title,
+        source: post.source
       }
-    `});
+    });
     console.log('result', result);
     return {} as IPost;
   }

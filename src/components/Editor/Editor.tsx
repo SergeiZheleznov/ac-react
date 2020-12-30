@@ -5,7 +5,7 @@ import { BlockText } from './BlockText';
 
 interface IEditorProps {
   post: IPost;
-  onSave: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onSave: (contentBlocks: IContentBlock[]) => void;
   onUpdate: (post: IPost) => void;
 }
 
@@ -24,19 +24,29 @@ export const Editor: React.FC<IEditorProps> = (props) => {
     setContentBlocks([...contentBlocks, textBlock ]);
   };
 
+  const onSaveHandler = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    onSave(contentBlocks);
+  }
+
   return(
     <div>
       <h2>Blocks</h2>
       {contentBlocks.map((b, idx)=>{
         switch (b.type) {
           case 'text':
-            return <BlockText key={`block_${idx}`} />;
+            return <BlockText
+              contentBlock={b as IContentBlockText}
+              key={`block_${idx}`}
+              onValueUpdated={(value)=>{
+                setContentBlocks(contentBlocks.map(el => (el === b ? {...b, source: value} : el)));
+              }}
+            />;
         }
         return(<div>Unknown</div>);
       })}
 
       <button onClick={addBlock}>+</button>
-      <button onClick={onSave}>Save</button>
+      <button onClick={onSaveHandler}>Save</button>
     </div>
   );
 }
