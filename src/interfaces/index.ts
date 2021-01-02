@@ -5,3 +5,5 @@ export * from './IAppContext';
 export * from './IAuthService';
 export * from './IAuthHelper';
 export * from './IContentBlock';
+
+export type WorkingMode = 'view' | 'edit';

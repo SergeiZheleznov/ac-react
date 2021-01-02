@@ -1,5 +1,5 @@
 import React from 'react';
-import { IContentBlock, IContentBlockText, IPost } from '../../interfaces';
+import { IContentBlock, IContentBlockText, IPost, WorkingMode } from '../../interfaces';
 import { BlockText } from './BlockText';
 
 interface IEditorProps {
@@ -24,6 +24,7 @@ export const Editor: React.FC<IEditorProps> = (props) => {
   }
 
   const [contentBlocks, setContentBlocks] = React.useState<IContentBlock[]>(initContentBlocks);
+  const [activeBlockId, setActiveBlockId] = React.useState<number>(-1);
 
   React.useEffect(()=>{
     // onUpdate({...post, source: JSON.stringify(contentBlocks)});
@@ -43,24 +44,35 @@ export const Editor: React.FC<IEditorProps> = (props) => {
     onSave(contentBlocks);
   }
 
+  const setMode = (idx: number, mode: WorkingMode) => {
+    if (mode === 'edit') {
+      setActiveBlockId(idx);
+    }
+    if (idx === activeBlockId) {
+      setActiveBlockId(-1);
+    }
+  }
+
   return(
-    <div>
+    <div className={'block'}>
       <h2>Blocks</h2>
       {contentBlocks.map((b, idx)=>{
         switch (b.type) {
           case 'text':
             return <BlockText
+              mode={activeBlockId === idx ? 'edit' : 'view'}
+              idx={idx}
+              setMode={setMode}
               contentBlock={b as IContentBlockText}
               key={`block_${idx}`}
-              onValueUpdated={(value)=>{
-                setContentBlocks(contentBlocks.map(el => (el === b ? {...b, source: value} : el)));
+              updateBlock={(block: IContentBlockText)=>{
+                setContentBlocks(contentBlocks.map(el => (el === b ? block : el)));
               }}
             />;
         }
         return(<div>Unknown</div>);
       })}
-
-      <button className={'block py-2'} onClick={addBlock}>+</button>
+      <button onClick={addBlock} type="button" className="inline-flex w-full items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">+</button>
       <button onClick={onSaveHandler}>Save</button>
     </div>
   );

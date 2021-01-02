@@ -1,16 +1,18 @@
 import MarkdownIt from 'markdown-it';
 import React from 'react';
-import { IContentBlockText } from '../../interfaces';
+import { IContentBlockText, WorkingMode } from '../../interfaces';
+
 
 interface IBlockTextProps {
+  idx: number;
   contentBlock: IContentBlockText;
-  onValueUpdated: (value: string) => void;
+  mode: WorkingMode;
+  updateBlock: (block: IContentBlockText) => void;
+  setMode: (idx: number, mode: WorkingMode) => void;
 }
-
-type BlockMode  = 'view' | 'edit';
 interface IViewModeProps {
   source: string;
-  changeMode: (mode: BlockMode) => void;
+  changeMode: (mode: WorkingMode) => void;
 };
 
 const ViewMode: React.FC<IViewModeProps> = (props) => {
@@ -18,35 +20,70 @@ const ViewMode: React.FC<IViewModeProps> = (props) => {
   const md = new MarkdownIt();
   return(
     <div
-      className={'border-gray-100 p-2 prose'}
+      className={'py-2 prose hover:bg-gray-50 cursor-pointer'}
       onClick={()=>changeMode('edit')}
       dangerouslySetInnerHTML={{__html: source ? md.render(source) : 'click to edit'}}
       />
-      
+  );
+}
+
+interface IEditModeProps {
+  contentBlock: IContentBlockText;
+  updateBlock: (block: IContentBlockText) => void;
+  changeMode: (mode: WorkingMode) => void;
+}
+
+const EditMode: React.FC<IEditModeProps> = (props) => {
+
+  const {contentBlock, updateBlock, changeMode} = props;
+
+  const [rows, setRows] = React.useState<number>(4);
+  const minRows = 4;
+  const maxRows = 30;
+
+  const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const el = event.target;
+    updateBlock({...contentBlock, source: el.value});
+
+    const textareaLineHeight = 16;
+    const previousRows = el.rows;
+    el.rows = minRows;
+    const currentRows = ~~(el.scrollHeight / textareaLineHeight);
+
+    if (currentRows === previousRows) {
+    	el.rows = currentRows;
+    }
+		
+		if (currentRows >= maxRows) {
+			el.rows = maxRows;
+			el.scrollTop = el.scrollHeight;
+    }
+    
+    setRows(currentRows < maxRows ? currentRows : maxRows);
+  }
+
+  return(
+    <div>
+      <textarea
+        onChange={onChange}
+        style={{lineHeight: '16px'}}
+        onBlur={()=>changeMode('view')}
+        className={'w-full resize-y border'}
+        value={contentBlock.source}
+        rows={rows}
+      />
+    </div>
   );
 }
 
 export const BlockText: React.FC<IBlockTextProps> = (props) => {
+  const {updateBlock, contentBlock, mode, idx, setMode} = props;
 
-  const {onValueUpdated, contentBlock} = props;
-  const [mode, setMode] = React.useState<BlockMode>('view');
-
-  const changeMode = (mode: BlockMode) => {
-    setMode(mode);
+  const changeMode = (mode: WorkingMode) => {
+    setMode(idx, mode);
   }
-
-  const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = event.target.value;
-    onValueUpdated(value);
-  }
-
   if (mode === 'view') {
-    return(<ViewMode source={contentBlock.source} changeMode={changeMode} />)
+    return <ViewMode source={contentBlock.source} changeMode={changeMode} />;
   }
-
-  return(
-    <div className={'py-3 border-gray-100'}>
-      <textarea onChange={onChange} onBlur={()=>changeMode('view')} className={'w-full resize-y border'} value={contentBlock.source} />
-    </div>
-  );
+  return <EditMode contentBlock={contentBlock} updateBlock={updateBlock} changeMode={changeMode} />;
 }
