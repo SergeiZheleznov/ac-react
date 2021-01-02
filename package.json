@@ -6,6 +6,7 @@
     "@apollo/client": "^3.3.6",
     "@craco/craco": "^6.0.0",
     "@tailwindcss/postcss7-compat": "^2.0.2",
+    "@tailwindcss/typography": "^0.3.1",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",
@@ -15,6 +16,7 @@
     "@types/react-dom": "^16.9.10",
     "autoprefixer": "^9.8.6",
     "graphql": "^15.4.0",
+    "markdown-it": "^12.0.4",
     "postcss": "^7.0.35",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -47,5 +49,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^12.0.0"
   }
 }

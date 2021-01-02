@@ -1,6 +1,5 @@
-import { IContentBlock, IPost } from "./";
+import { IPost } from "./";
 
 export interface IPostHelper {
   getHtml(post: IPost): string;
-  getContentBlocks(post: IPost): IContentBlock[];
 }

@@ -35,7 +35,7 @@ export const CreatePost: React.FC<ICreatePostProps> = (props) => {
         const value = e.target.value;
         setPost({...post, title: value});
       }} />
-      <Editor post={post} onUpdate={onUpdate} onSave={onSave} />
+      <Editor initialPost={post} onUpdate={onUpdate} onSave={onSave} />
     </div>
   )
 }

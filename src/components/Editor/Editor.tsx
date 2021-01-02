@@ -1,18 +1,33 @@
 import React from 'react';
-import { PostHelper } from '../../helpers/PostHelper';
 import { IContentBlock, IContentBlockText, IPost } from '../../interfaces';
 import { BlockText } from './BlockText';
 
 interface IEditorProps {
-  post: IPost;
+  initialPost: IPost;
   onSave: (contentBlocks: IContentBlock[]) => void;
   onUpdate: (post: IPost) => void;
 }
 
 export const Editor: React.FC<IEditorProps> = (props) => {
 
-  const {post, onSave} = props;
-  const [contentBlocks, setContentBlocks] = React.useState<IContentBlock[]>(PostHelper.getContentBlocks(post));
+  const {initialPost: post, onSave, onUpdate} = props;
+
+  let initContentBlocks = [];
+  
+  try {
+    initContentBlocks = JSON.parse(post.source);
+  } catch (error) {
+    
+  }
+  if (initContentBlocks?.length < 1) {
+    initContentBlocks = [];
+  }
+
+  const [contentBlocks, setContentBlocks] = React.useState<IContentBlock[]>(initContentBlocks);
+
+  React.useEffect(()=>{
+    // onUpdate({...post, source: JSON.stringify(contentBlocks)});
+  }, [contentBlocks, onUpdate, post]);
 
   const addBlock = () => {
 
@@ -45,7 +60,7 @@ export const Editor: React.FC<IEditorProps> = (props) => {
         return(<div>Unknown</div>);
       })}
 
-      <button onClick={addBlock}>+</button>
+      <button className={'block py-2'} onClick={addBlock}>+</button>
       <button onClick={onSaveHandler}>Save</button>
     </div>
   );
