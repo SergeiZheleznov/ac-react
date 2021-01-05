@@ -1,3 +1,4 @@
+import { Grid } from '@material-ui/core';
 import React from 'react';
 import { PostCard } from '../components';
 import { AppContext } from '../context/AppContext';
@@ -26,8 +27,12 @@ export const PostsList: React.FC = (props: IPostsListProps) => {
   }
 
   return(
-    <div>
-      {posts?.map(p=><PostCard key={p.id} post={p} />)}
-    </div>
+    <Grid container justify="center" spacing={2}>
+    {posts?.map((p) => (
+        <Grid key={p.id} item>
+          <PostCard post={p} />
+        </Grid>
+      ))}
+    </Grid>
   );
 }

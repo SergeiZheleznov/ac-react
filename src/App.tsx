@@ -6,6 +6,22 @@ import { Route, Switch } from "wouter";
 import { IUser } from './interfaces/IUser';
 import { IAuthService, IPostService } from './interfaces';
 import { CreatePost } from './routes/CreatePost';
+import { AppBar, Button, createStyles, IconButton, makeStyles, Theme, Toolbar, Typography } from '@material-ui/core';
+
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      flexGrow: 1,
+    },
+    menuButton: {
+      marginRight: theme.spacing(2),
+    },
+    title: {
+      flexGrow: 1,
+    },
+  }),
+);
 
 interface IAppProps {
   postService: IPostService;
@@ -16,7 +32,8 @@ const App: React.FC<IAppProps> = (props) => {
 
   const { authService, postService } = props;
   const [currentUser, setCurrentUser] = React.useState<IUser | undefined>(undefined);
-
+  const classes = useStyles();
+  
   React.useEffect(()=>{
     (async()=>{
       const user = await authService.authenticate();
@@ -26,6 +43,19 @@ const App: React.FC<IAppProps> = (props) => {
 
   return (
     <AppContext.Provider value={{ postService, authService, currentUser }}>
+
+    <AppBar position="static">
+      <Toolbar>
+        {/* <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+          <MenuIcon />
+        </IconButton> */}
+        <Typography variant="h6" className={classes.title}>
+          News
+        </Typography>
+        <Button color="inherit">Login</Button>
+      </Toolbar>
+    </AppBar>
+
       <div className="text-xs container mx-auto">
         <header className="App-header">
           { currentUser ? `Hi ${currentUser.username}` : <LoginForm />}

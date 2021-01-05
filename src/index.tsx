@@ -1,10 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import 'fontsource-roboto';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
 import { AuthService, PostService } from './services';
+import { CssBaseline, ThemeProvider } from '@material-ui/core';
+import { createMuiTheme } from '@material-ui/core/styles';
+import purple from '@material-ui/core/colors/purple';
+import green from '@material-ui/core/colors/green';
+
+const theme = createMuiTheme({
+  palette: {
+    type: 'dark',
+    primary: {
+      main: purple[500],
+    },
+    secondary: {
+      main: green[500],
+    },
+  },
+});
 
 const jwt = localStorage.getItem('jwt');
 const link = createHttpLink({
@@ -23,10 +40,13 @@ const authService = new AuthService(client);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App
-      postService={postService}
-      authService={authService}
-    />
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <App
+        postService={postService}
+        authService={authService}
+      />
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

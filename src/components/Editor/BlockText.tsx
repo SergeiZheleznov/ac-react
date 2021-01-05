@@ -1,3 +1,4 @@
+import { TextareaAutosize } from '@material-ui/core';
 import MarkdownIt from 'markdown-it';
 import React from 'react';
 import { IContentBlockText, WorkingMode } from '../../interfaces';
@@ -36,42 +37,20 @@ interface IEditModeProps {
 const EditMode: React.FC<IEditModeProps> = (props) => {
 
   const {contentBlock, updateBlock, changeMode} = props;
-
-  const [rows, setRows] = React.useState<number>(4);
-  const minRows = 4;
-  const maxRows = 30;
-
   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const el = event.target;
     updateBlock({...contentBlock, source: el.value});
-
-    const textareaLineHeight = 16;
-    const previousRows = el.rows;
-    el.rows = minRows;
-    const currentRows = ~~(el.scrollHeight / textareaLineHeight);
-
-    if (currentRows === previousRows) {
-    	el.rows = currentRows;
-    }
-		
-		if (currentRows >= maxRows) {
-			el.rows = maxRows;
-			el.scrollTop = el.scrollHeight;
-    }
-    
-    setRows(currentRows < maxRows ? currentRows : maxRows);
   }
 
   return(
     <div>
-      <textarea
-        onChange={onChange}
-        style={{lineHeight: '16px'}}
-        onBlur={()=>changeMode('view')}
-        className={'w-full resize-y border'}
+      <TextareaAutosize
+        aria-label="minimum height"
+        rowsMin={3}
+        placeholder="Minimum 3 rows"
         value={contentBlock.source}
-        rows={rows}
-      />
+        onChange={onChange}
+        />
     </div>
   );
 }
