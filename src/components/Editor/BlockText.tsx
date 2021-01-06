@@ -50,6 +50,7 @@ const EditMode: React.FC<IEditModeProps> = (props) => {
         placeholder="Minimum 3 rows"
         value={contentBlock.source}
         onChange={onChange}
+        onBlur={()=>changeMode('view')}
         />
     </div>
   );

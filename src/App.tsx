@@ -6,8 +6,9 @@ import { Route, Switch } from "wouter";
 import { IUser } from './interfaces/IUser';
 import { IAuthService, IPostService } from './interfaces';
 import { CreatePost } from './routes/CreatePost';
-import { AppBar, Button, createStyles, IconButton, makeStyles, Theme, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Button, Container, Theme, Toolbar, Typography } from '@material-ui/core';
 
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,7 +34,7 @@ const App: React.FC<IAppProps> = (props) => {
   const { authService, postService } = props;
   const [currentUser, setCurrentUser] = React.useState<IUser | undefined>(undefined);
   const classes = useStyles();
-  
+
   React.useEffect(()=>{
     (async()=>{
       const user = await authService.authenticate();
@@ -43,23 +44,18 @@ const App: React.FC<IAppProps> = (props) => {
 
   return (
     <AppContext.Provider value={{ postService, authService, currentUser }}>
-
-    <AppBar position="static">
-      <Toolbar>
-        {/* <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-          <MenuIcon />
-        </IconButton> */}
-        <Typography variant="h6" className={classes.title}>
-          News
-        </Typography>
-        <Button color="inherit">Login</Button>
-      </Toolbar>
-    </AppBar>
-
-      <div className="text-xs container mx-auto">
-        <header className="App-header">
-          { currentUser ? `Hi ${currentUser.username}` : <LoginForm />}
-        </header>
+      <AppBar position="static">
+        <Toolbar>
+          {/* <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+            <MenuIcon />
+          </IconButton> */}
+          <Typography variant="h6" className={classes.title}>
+            { currentUser ? `Hi ${currentUser.username}` : <LoginForm />}
+          </Typography>
+          <Button color="inherit">Login</Button>
+        </Toolbar>
+      </AppBar>
+      <Container fixed>
         <Switch>
           <Route path="/post/:id">
             {params => <PostPage id={params.id} />}
@@ -70,7 +66,7 @@ const App: React.FC<IAppProps> = (props) => {
           </Route>
           <Route path="/" component={PostsList} />
         </Switch>
-      </div>
+      </Container>
     </AppContext.Provider>
   );
 }

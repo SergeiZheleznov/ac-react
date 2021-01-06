@@ -5,11 +5,11 @@ import {
   CardActions,
   CardContent,
   CardMedia,
-  makeStyles,
   Typography 
 } from '@material-ui/core';
 import React from 'react';
 import { IPost } from '../interfaces';
+import { makeStyles } from '@material-ui/core/styles';
 interface IPostCardProps {
   post: IPost;
 }
@@ -47,9 +47,6 @@ export const PostCard: React.FC<IPostCardProps> = (props) => {
       <CardActions>
         <Button size="small" color="primary">
           Share
-        </Button>
-        <Button size="small" color="primary">
-          Learn More
         </Button>
       </CardActions>
     </Card>

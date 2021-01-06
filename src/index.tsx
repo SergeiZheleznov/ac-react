@@ -6,8 +6,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
 import { AuthService, PostService } from './services';
-import { CssBaseline, ThemeProvider } from '@material-ui/core';
-import { createMuiTheme } from '@material-ui/core/styles';
+import { CssBaseline } from '@material-ui/core';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import purple from '@material-ui/core/colors/purple';
 import green from '@material-ui/core/colors/green';
 
