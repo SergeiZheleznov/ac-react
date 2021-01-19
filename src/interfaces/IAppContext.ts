@@ -1,9 +1,5 @@
-import { IAuthService } from "./IAuthService";
-import { IPostService } from "./IPostService";
-import { IUser } from "./IUser";
+import { IRootStore } from "./IRootStore";
 
 export interface IAppContext {
-  postService: IPostService | undefined;
-  authService: IAuthService | undefined;
-  currentUser: IUser | undefined;
+  rootStore: IRootStore;
 }

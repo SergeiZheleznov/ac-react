@@ -4,8 +4,6 @@ import 'fontsource-roboto';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
-import { AuthService, PostService } from './services';
 import { CssBaseline } from '@material-ui/core';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import purple from '@material-ui/core/colors/purple';
@@ -23,29 +21,11 @@ const theme = createMuiTheme({
   },
 });
 
-const jwt = localStorage.getItem('jwt');
-const link = createHttpLink({
-  uri: 'http://localhost:1337/graphql',
-  headers: {
-    authorization: jwt ? `Bearer ${jwt}` : "",
-  }
-});
-const client = new ApolloClient({
-  link,
-  cache: new InMemoryCache()
-});
-
-const postService = new PostService(client);
-const authService = new AuthService(client);
-
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <App
-        postService={postService}
-        authService={authService}
-      />
+      <App />
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')

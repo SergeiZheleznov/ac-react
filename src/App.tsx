@@ -3,12 +3,10 @@ import './App.css';
 import { LoginForm, PostPage, PostsList } from './containers';
 import { AppContext } from './context/AppContext';
 import { Route, Switch } from "wouter";
-import { IUser } from './interfaces/IUser';
-import { IAuthService, IPostService } from './interfaces';
 import { CreatePost } from './routes/CreatePost';
 import { AppBar, Button, Container, Theme, Toolbar, Typography } from '@material-ui/core';
-
 import { makeStyles, createStyles } from '@material-ui/core/styles';
+import { RootStore } from './stores';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,32 +23,29 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IAppProps {
-  postService: IPostService;
-  authService: IAuthService;
+
 }
 
 const App: React.FC<IAppProps> = (props) => {
 
-  const { authService, postService } = props;
-  const [currentUser, setCurrentUser] = React.useState<IUser | undefined>(undefined);
+  const rootStore = new RootStore();
   const classes = useStyles();
 
   React.useEffect(()=>{
     (async()=>{
-      const user = await authService.authenticate();
-      setCurrentUser(user);
+      rootStore.authStore.authenticate();
     })();
-  },[authService]);
+  },[rootStore.authStore]);
 
   return (
-    <AppContext.Provider value={{ postService, authService, currentUser }}>
+    <AppContext.Provider value={{ rootStore }}>
       <AppBar position="static">
         <Toolbar>
           {/* <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
             <MenuIcon />
           </IconButton> */}
           <Typography variant="h6" className={classes.title}>
-            { currentUser ? `Hi ${currentUser.username}` : <LoginForm />}
+            <LoginForm />
           </Typography>
           <Button color="inherit">Login</Button>
         </Toolbar>

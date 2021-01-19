@@ -1,26 +1,26 @@
 import { Grid } from '@material-ui/core';
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { PostCard } from '../components';
 import { AppContext } from '../context/AppContext';
-import { IPost } from '../interfaces';
 interface IPostsListProps {
 
 }
-export const PostsList: React.FC = (props: IPostsListProps) => {
+export const PostsList: React.FC = observer((props: IPostsListProps) => {
   
-  const { postService } = React.useContext(AppContext);
-  const [ posts, setPosts ] = React.useState<IPost[]>([]);
+  const { rootStore } = React.useContext(AppContext);
+
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   React.useEffect(()=>{
-    (async()=>{
-      const response = await postService?.getLastPosts();
-      if (response) {
-        setPosts(response);
-      }
+    (async ()=>{
+      setIsLoading(true);
+      await rootStore.postStore.getAll();
+      setIsLoading(false);
     })();
-  }, [postService]);
+  }, [rootStore.postStore]);
 
-  if (posts.length < 1) {
+  if (isLoading) {
     return(
       <div>Loading...</div>
     );
@@ -28,11 +28,11 @@ export const PostsList: React.FC = (props: IPostsListProps) => {
 
   return(
     <Grid container justify="center" spacing={2}>
-    {posts?.map((p) => (
+    {rootStore.postStore.posts.map((p) => (
         <Grid key={p.id} item>
           <PostCard post={p} />
         </Grid>
       ))}
     </Grid>
   );
-}
+});

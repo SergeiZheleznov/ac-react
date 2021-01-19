@@ -3,7 +3,6 @@ import MarkdownIt from 'markdown-it';
 import React from 'react';
 import { IContentBlockText, WorkingMode } from '../../interfaces';
 
-
 interface IBlockTextProps {
   idx: number;
   contentBlock: IContentBlockText;

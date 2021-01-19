@@ -1,26 +1,22 @@
 import React from 'react';
 import { Editor } from '../components/Editor';
-import { AppContext } from '../context/AppContext';
+// import { AppContext } from '../context/AppContext';
 import { IContentBlock, IPost, postDefault } from '../interfaces';
 interface ICreatePostProps {
 
 }
 export const CreatePost: React.FC<ICreatePostProps> = (props) => {
 
-  const {postService} = React.useContext(AppContext);
+  // const {postService} = React.useContext(AppContext);
   const [post, setPost] = React.useState<IPost>(postDefault);
-
-  if (postService === undefined) {
-    return(<div>Service is not ready</div>);
-  }
 
   const onSave = (contentBlocks: IContentBlock[]) => {
     (async()=>{
-      const createdPost = await postService.createPost({...post, source: JSON.stringify(contentBlocks)});
-      if (!createdPost) {
-        return;
-      }
-      console.log('createdPost', createdPost);
+      // const createdPost = await postService.createPost({...post, source: JSON.stringify(contentBlocks)});
+      // if (!createdPost) {
+      //   return;
+      // }
+      // console.log('createdPost', createdPost);
     })();
   }
 
